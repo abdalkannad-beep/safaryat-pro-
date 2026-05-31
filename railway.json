@@ -1,0 +1,4 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "deploy": {"startCommand": "gunicorn app:app"}
+}

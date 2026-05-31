@@ -1,0 +1,71 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<section class="panel">
+<h1>رسائل واتساب</h1>
+<p class="hint">يمكنك الإرسال اليدوي مباشرة، أو جدولة رسالة تلقائية حسب التاريخ أو بعد مدة محددة.</p>
+
+<div class="inline">
+<a class="btn bright" href="{{ url_for('whatsapp_settings') }}">إعداد رابط واتساب API</a>
+<a class="btn" href="{{ url_for('notifications') }}">عرض تنبيهات الإرسال</a>
+</div>
+
+<form method="post" class="form">
+<label>رقم المستلم</label>
+<input name="phone" placeholder="مثال: 9677xxxxxxx أو 9665xxxxxxx" required>
+
+<label>نص الرسالة</label>
+<textarea name="message" placeholder="اكتب الرسالة هنا" required></textarea>
+
+<label>طريقة الإرسال</label>
+<select name="send_type" id="sendType">
+<option value="manual">إرسال يدوي الآن عبر WhatsApp Web</option>
+<option value="scheduled">إرسال تلقائي مجدول عبر API</option>
+</select>
+
+<div class="panel inner-panel">
+<h3>اختيار موعد الإرسال التلقائي</h3>
+<label>إرسال في تاريخ ووقت محدد</label>
+<input type="datetime-local" name="scheduled_at">
+
+<p class="hint">أو اترك التاريخ فارغاً واستخدم الإرسال بعد مدة:</p>
+<div class="inline clean">
+<input type="number" name="delay_value" placeholder="بعد كم؟">
+<select name="delay_unit">
+<option value="minutes">دقيقة</option>
+<option value="hours">ساعة</option>
+<option value="days">يوم</option>
+</select>
+</div>
+</div>
+
+<button>حفظ / إرسال</button>
+</form>
+</section>
+
+<section class="panel">
+<h2>سجل الرسائل</h2>
+<div class="table-wrap">
+<table>
+<tr>
+<th>الهاتف</th><th>الرسالة</th><th>النوع</th><th>الموعد</th><th>الحالة</th><th>وقت الإرسال</th><th>إجراء</th>
+</tr>
+{% for r in rows %}
+<tr>
+<td>{{ r.phone }}</td>
+<td style="white-space:normal;min-width:260px">{{ r.message }}</td>
+<td>{{ r.send_type }}</td>
+<td>{{ r.scheduled_at }}</td>
+<td><span class="badge status-{{ r.status }}">{{ r.status }}</span></td>
+<td>{{ r.sent_at }}</td>
+<td>
+<form method="post" action="{{ url_for('whatsapp_send_now', msg_id=r.id) }}">
+<button>إرسال الآن API</button>
+</form>
+</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+</section>
+{% endblock %}

@@ -1,0 +1,74 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<section class="panel">
+<h1>المعاملات</h1>
+<form class="inline">
+<input name="q" value="{{ q }}" placeholder="بحث بالاسم أو الجواز أو الهاتف">
+<input type="date" name="day" value="{{ day }}">
+<select name="process_status">
+<option value="">كل الحالات</option>
+<option value="ready">جاهز</option>
+<option value="working">قيد العمل عليها</option>
+<option value="embassy">في السفارة</option>
+<option value="failed">فشل</option>
+<option value="delivered">تم تسليم الجواز</option>
+<option value="delivered">تم تسليم الجواز</option>
+</select>
+<button>بحث</button>
+<a class="btn" href="{{ url_for('transaction_add') }}">إضافة معاملة</a>
+</form>
+</section>
+
+<section class="panel">
+<div class="table-wrap compact-table">
+<table>
+<tr>
+<th>التاريخ</th><th>العميل</th><th>الجواز</th><th>الهاتف</th><th>الوكيل</th><th>الخدمة</th>
+<th>العملة</th><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th><th>دفعة</th><th>حذف</th>
+</tr>
+{% for r in rows %}
+<tr>
+<td>{{ r.created_at[:10] }}</td>
+<td>{{ r.full_name }}</td>
+<td>{{ r.passport_number }}</td>
+<td>{{ r.phone }}</td>
+<td>{{ r.agent_name or '-' }}</td>
+<td>{{ r.service_name }}</td>
+<td>{{ r.currency_code or 'YER' }}</td>
+<td>{{ r.total_amount }}</td>
+<td>{{ r.paid_amount }}</td>
+<td>{{ r.remaining_amount }}</td>
+<td>
+{% if r.process_status == "ready" %}
+<span class="status-dot ready">جاهز</span>
+{% elif r.process_status == "working" %}
+<span class="status-dot working">قيد العمل عليها</span>
+{% elif r.process_status == "embassy" %}
+<span class="status-dot embassy">في السفارة</span>
+{% elif r.process_status == "delivered" %}
+<span class="status-dot delivered">تم تسليم الجواز</span>
+{% else %}
+<span class="status-dot failed">فشل</span>
+{% endif %}
+</td>
+<td>
+<form method="post" action="{{ url_for('add_payment', tx_id=r.id) }}" class="mini">
+<input name="amount" type="number" step="0.01" placeholder="مبلغ">
+<input type="date" name="paid_at" value="{{ today }}">
+<button>إضافة</button>
+</form>
+</td>
+<td>
+{% if is_admin() or user.can_delete %}
+<form method="post" action="{{ url_for('transaction_delete', tx_id=r.id) }}" onsubmit="return confirm('نقل المعاملة للمحذوفات؟')">
+<button class="danger-btn">حذف</button>
+</form>
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+</section>
+{% endblock %}

@@ -1,0 +1,98 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<h1>الإدخال الجماعي اليومي</h1>
+
+<div class="datebar">
+  <div><b>التاريخ:</b> <span id="entryDateText">{{ today }}</span></div>
+  <div><b>اليوم:</b> <span id="entryDayText">{{ day_name }}</span></div>
+  <div><b>الساعة:</b> <span id="clock">{{ now_time }}</span></div>
+</div>
+
+<form method="post" id="batchForm">
+<input type="hidden" name="entry_date" value="{{ today }}">
+<input type="hidden" name="row_count" id="row_count" value="1">
+
+<div class="table-wrap">
+<table id="batchTable" class="batch-table">
+<thead>
+<tr>
+<th>م</th>
+<th>اسم العميل</th>
+<th>رقم الجواز</th>
+<th>رقم الواتساب</th>
+<th>نوع المعاملة</th>
+<th>تفويض</th>
+<th>رخصة</th>
+<th>تعديل مهنة</th>
+<th>الإجمالي</th>
+<th>المدفوع</th>
+<th>الحالة</th><th>تنبيه الأيام</th>
+<th>ملاحظات</th>
+</tr>
+</thead>
+<tbody id="rows"></tbody>
+</table>
+</div>
+
+<div class="inline sticky-actions">
+<button type="button" onclick="addRow()">إضافة جواز / عميل آخر</button>
+<button type="submit">حفظ نهائي لكل المدخلات</button>
+<a class="btn" href="{{ url_for('transactions', day=today) }}">عرض معاملات اليوم</a>
+</div>
+</form>
+
+<script>
+const cats = [
+{% for c in cats %}
+{ id: "{{ c.id }}", name: "{{ c.name }}", price: "{{ c.price }}" },
+{% endfor %}
+];
+
+const defaultAlert = "{{ default_alert }}";
+let rowIndex = 0;
+
+function categoryOptions() {
+  return cats.map(c => `<option value="${c.id}" data-price="${c.price}">${c.name} - ${c.price}</option>`).join("");
+}
+
+function setPrice(selectEl, index) {
+  const price = selectEl.options[selectEl.selectedIndex].dataset.price || 0;
+  const amount = document.querySelector(`[name="total_amount_${index}"]`);
+  if (!amount.value) amount.value = price;
+}
+
+function addRow() {
+  const i = rowIndex++;
+  document.getElementById("row_count").value = rowIndex;
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${i+1}</td>
+    <td><input name="full_name_${i}" placeholder="الاسم"></td>
+    <td><input name="passport_number_${i}" placeholder="الجواز" class="passport-input"></td>
+    <td><input name="phone_${i}" placeholder="الهاتف"></td>
+    <td><select name="category_id_${i}" onchange="setPrice(this, ${i})">${categoryOptions()}</select></td>
+    <td><select name="delegated_${i}"><option>لا</option><option>نعم</option></select></td>
+    <td><select name="needs_license_${i}"><option>لا</option><option>نعم</option></select></td>
+    <td><select name="needs_profession_change_${i}"><option>لا</option><option>نعم</option></select></td>
+    <td><input name="total_amount_${i}" type="number" step="0.01"></td>
+    <td><input name="paid_amount_${i}" type="number" step="0.01" value="0"></td>
+    <td><select name="process_status_${i}"><option value="ready">جاهز</option><option value="working">قيد العمل عليها</option><option value="embassy">في السفارة</option><option value="failed">فشل</option>
+<option value="delivered">تم تسليم الجواز</option>
+<option value="delivered">تم تسليم الجواز</option></select></td>
+    <td><input name="alert_days_${i}" type="number" value="" placeholder="اختياري"></td>
+    <td><input name="notes_${i}" placeholder="ملاحظات"></td>
+  `;
+  document.getElementById("rows").appendChild(tr);
+  setPrice(tr.querySelector(`select[name="category_id_${i}"]`), i);
+  tr.querySelector(`[name="passport_number_${i}"]`).focus();
+}
+
+function updateClock() {
+  const d = new Date();
+  document.getElementById("clock").textContent = d.toLocaleTimeString("ar", {hour12:false});
+}
+setInterval(updateClock, 1000);
+addRow();
+</script>
+{% endblock %}

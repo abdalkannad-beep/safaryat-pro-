@@ -1,0 +1,112 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<section class="panel">
+<h1>إضافة معاملة</h1>
+<form method="post" class="form wide-form">
+<div class="form-grid">
+<div>
+<label>اختر عميل</label>
+<select name="client_id" onchange="document.getElementById('newClient').style.display=this.value=='new'?'block':'none'">
+<option value="new">عميل جديد</option>
+{% for c in clients %}<option value="{{ c.id }}">{{ c.full_name }} - {{ c.passport_number }}</option>{% endfor %}
+</select>
+</div>
+<div>
+<label>اسم الوكيل</label>
+<input name="agent_name" placeholder="اسم الوكيل أو المكتب الوسيط">
+</div>
+</div>
+
+<div id="newClient" class="sub-box">
+<div class="form-grid">
+<input name="new_full_name" placeholder="اسم العميل الجديد">
+<input name="new_passport_number" placeholder="رقم الجواز">
+<input name="new_phone" placeholder="رقم الواتساب">
+</div>
+</div>
+
+<div class="form-grid">
+<div>
+<label>نوع المعاملة</label>
+<select name="category_id">{% for c in cats %}<option value="{{ c.id }}">{{ c.name }} - السعر {{ c.price }}</option>{% endfor %}</select>
+</div>
+<div>
+<label>حالة الإجراء</label>
+<select name="process_status">
+<option value="ready">جاهز</option>
+<option value="working">قيد العمل عليها</option>
+<option value="embassy">في السفارة</option>
+<option value="failed">فشل</option>
+<option value="delivered">تم تسليم الجواز</option>
+<option value="delivered">تم تسليم الجواز</option>
+</select>
+</div>
+<div>
+<label>هل تم التفويض على المكتب؟</label>
+<select name="delegated"><option>لا</option><option>نعم</option></select>
+</div>
+<div>
+<label>هل يحتاج رخصة قيادة؟</label>
+<select name="needs_license"><option>لا</option><option>نعم</option></select>
+</div>
+<div>
+<label>هل يحتاج تعديل مهنة؟</label>
+<select name="needs_profession_change"><option>لا</option><option>نعم</option></select>
+</div>
+<div>
+<label>حالة المعاملة</label>
+<select name="status"><option>جديدة</option><option>قيد المتابعة</option><option>مكتملة</option><option>ملغية</option></select>
+</div>
+<div>
+<label>تاريخ بداية المعاملة</label>
+<input type="date" name="start_date" value="{{ today }}" required>
+</div>
+<div>
+<label>تنبيه الأيام</label>
+<input type="number" name="alert_days" value="{{ default_alert }}" placeholder="اختياري">
+</div>
+</div>
+
+<h3>المحاسبة والعملة</h3>
+<div class="form-grid">
+<div>
+<label>العملة</label>
+<select name="currency_code" id="currency_code" onchange="setRate()">
+{% for cur in currencies %}
+<option value="{{ cur.code }}" data-rate="{{ cur.rate_to_base }}">{{ cur.name }} - {{ cur.code }}</option>
+{% endfor %}
+</select>
+</div>
+<div>
+<label>سعر الصرف</label>
+<input name="exchange_rate" id="exchange_rate" type="number" step="0.0001" value="1">
+</div>
+<div>
+<label>الإجمالي</label>
+<input type="number" step="0.01" name="total_amount" placeholder="الإجمالي">
+</div>
+<div>
+<label>المدفوع</label>
+<input type="number" step="0.01" name="paid_amount" value="0">
+</div>
+<div>
+<label>تاريخ السداد</label>
+<input type="date" name="payment_date" value="{{ today }}">
+</div>
+</div>
+
+<label>ملاحظات</label>
+<textarea name="notes" placeholder="ملاحظات"></textarea>
+<button>حفظ المعاملة</button>
+</form>
+</section>
+<script>
+function setRate(){
+ const s=document.getElementById('currency_code');
+ const rate=s.options[s.selectedIndex].dataset.rate || 1;
+ document.getElementById('exchange_rate').value=rate;
+}
+setRate();
+</script>
+{% endblock %}

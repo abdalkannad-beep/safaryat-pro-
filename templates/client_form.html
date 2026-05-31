@@ -1,0 +1,13 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<h1>إضافة عميل</h1>
+<form method="post" class="form">
+<input name="full_name" placeholder="الاسم الكامل" required>
+<input name="passport_number" placeholder="رقم الجواز">
+<input name="phone" placeholder="رقم الهاتف / واتساب">
+<input name="address" placeholder="العنوان">
+<textarea name="notes" placeholder="ملاحظات"></textarea>
+<button>حفظ</button>
+</form>
+{% endblock %}

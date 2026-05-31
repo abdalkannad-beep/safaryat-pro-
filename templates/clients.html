@@ -1,0 +1,11 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<h1>العملاء</h1>
+<form class="inline"><input name="q" value="{{ q }}" placeholder="بحث بالاسم أو الجواز أو الهاتف"><button>بحث</button><a class="btn" href="{{ url_for('client_add') }}">إضافة عميل</a></form>
+<table><tr><th>الاسم</th><th>الجواز</th><th>الهاتف</th><th>العنوان</th><th>ملاحظات</th></tr>
+{% for r in rows %}
+<tr><td>{{ r.full_name }}</td><td>{{ r.passport_number }}</td><td>{{ r.phone }}</td><td>{{ r.address }}</td><td>{{ r.notes }}</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

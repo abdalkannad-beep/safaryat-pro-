@@ -1,0 +1,26 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<section class="panel">
+<h1>📅 التقارير السنوية</h1>
+<div class="alert">تقارير الوكالة هنا خاصة بالمدير فقط: لكل سنة، ولكل شهر، ويمكن الدخول لتقرير الشهر أو تحميل Excel.</div>
+
+<form class="inline">
+<input name="year" value="{{ year }}" placeholder="السنة مثال 2026">
+<button>عرض السنة</button>
+</form>
+
+<div class="cards">
+{% for m in months %}
+<div class="card gradient-{{ (loop.index % 5) + 1 }}">
+<span>{{ m.month }}</span>
+<b>{{ m.tx_count }}</b>
+<small>إيرادات: {{ m.income }} | مصروفات: {{ m.expenses }} | صافي: {{ m.profit }}</small>
+<div style="margin-top:12px">
+<a class="btn light" href="{{ url_for('reports_export', period='month', date=m.month ~ '-01') }}">Excel</a>
+</div>
+</div>
+{% endfor %}
+</div>
+</section>
+{% endblock %}

@@ -1,0 +1,50 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<div class="login-background">
+  <div class="photo photo-1">
+    <div>
+      <b>إدارة التأشيرات</b>
+      <span>عمرة، حج، زيارة، عمل</span>
+    </div>
+  </div>
+  <div class="photo photo-2">
+    <div>
+      <b>حجوزات السفر</b>
+      <span>رحلات، باصات، سيارات</span>
+    </div>
+  </div>
+  <div class="photo photo-3">
+    <div>
+      <b>محاسبة وتقارير</b>
+      <span>تقارير يومية وشهرية وسنوية</span>
+    </div>
+  </div>
+</div>
+
+<div class="login-modal">
+  
+<div class="login-logo-image">
+    <img src="{{ url_for('static', filename='safaryat_pro_logo.png') }}" alt="Safaryat Pro">
+</div>
+
+  <p class="login-subtitle">نظام احترافي لإدارة وكالات السفريات والسياحة</p>
+
+  <form method="post" class="vertical-login-form">
+    <label>اسم المستخدم</label>
+    <input name="username" required autocomplete="username" placeholder="أدخل اسم المستخدم">
+
+    <label>كلمة المرور</label>
+    <input name="password" type="password" required autocomplete="current-password" placeholder="أدخل كلمة المرور">
+
+    <button>تسجيل الدخول</button>
+  </form>
+
+  <div class="support-footer">
+    <h3>التواصل مع الدعم الفني</h3>
+    <p>القناد سوفت</p>
+    <p>البريد: <a href="mailto:abdalkannad@gmil.com">abdalkannad@gmil.com</a></p>
+    <p>الهاتف: <a href="tel:773697732">773697732</a></p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<section class="panel">
+<h1>إعدادات واتساب التلقائي</h1>
+
+<div class="alert">
+مهم: الإرسال التلقائي الحقيقي يحتاج رابط API من مزود واتساب رسمي مثل Meta WhatsApp Business API أو مزود محلي/خارجي.
+لا يكفي رابط wa.me للإرسال التلقائي، لأنه يفتح واتساب فقط ولا يرسل بدون تدخل.
+</div>
+
+<form method="post" class="form">
+<label>تفعيل الإرسال التلقائي</label>
+<select name="whatsapp_enabled">
+<option value="0" {% if settings.get('whatsapp_enabled') != '1' %}selected{% endif %}>غير مفعل</option>
+<option value="1" {% if settings.get('whatsapp_enabled') == '1' %}selected{% endif %}>مفعل</option>
+</select>
+
+<label>رابط API</label>
+<textarea name="whatsapp_api_url" placeholder="مثال: https://provider.com/send?token=XXXX&phone={phone}&message={message}">{{ settings.get('whatsapp_api_url','') }}</textarea>
+
+<label>طريقة الإرسال</label>
+<select name="whatsapp_api_method">
+<option value="GET" {% if settings.get('whatsapp_api_method','GET') == 'GET' %}selected{% endif %}>GET</option>
+<option value="POST" {% if settings.get('whatsapp_api_method') == 'POST' %}selected{% endif %}>POST</option>
+</select>
+
+<label>رقم المدير لاستقبال تنبيهات مستقبلية</label>
+<input name="manager_notify_phone" value="{{ settings.get('manager_notify_phone','') }}" placeholder="اختياري">
+
+<label>Headers / Token إضافي</label>
+<textarea name="whatsapp_api_headers" placeholder="اختياري، للتطوير لاحقاً">{{ settings.get('whatsapp_api_headers','') }}</textarea>
+
+<button>حفظ إعدادات واتساب</button>
+</form>
+</section>
+
+<section class="panel">
+<h2>شرح تركيب رابط واتساب API</h2>
+<p>اطلب من مزود خدمة واتساب رابط إرسال رسالة API. يجب أن يحتوي الرابط على مكان للرقم ومكان للرسالة.</p>
+
+<div class="code-box">
+https://provider.com/send?token=YOUR_TOKEN&phone={phone}&message={message}
+</div>
+
+<p>
+النظام سيستبدل:
+<br><b>{phone}</b> برقم العميل
+<br><b>{message}</b> بنص الرسالة
+</p>
+
+<h3>مثال عملي</h3>
+<div class="code-box">
+https://api.example.com/whatsapp/send?apikey=123456&to={phone}&text={message}
+</div>
+
+<p class="hint">
+بعد الحفظ، أي رسالة مجدولة في صفحة واتساب سيتم إرسالها تلقائياً عند الموعد، وسيظهر تنبيه في صفحة التنبيهات بنجاح أو فشل الإرسال.
+</p>
+</section>
+{% endblock %}

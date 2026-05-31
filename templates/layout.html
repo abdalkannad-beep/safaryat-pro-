@@ -1,0 +1,75 @@
+
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>{{ title or "نظام سفريات برو" }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#7c3aed">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% if user %}
+<button class="mobile-menu-btn" onclick="document.body.classList.toggle('menu-open')">☰</button>
+<div class="sidebar">
+  <div class="brand">
+    
+<div class="brand-logo-img-wrap">
+    <img src="{{ url_for('static', filename='safaryat_pro_logo.png') }}" alt="Safaryat Pro Logo">
+</div>
+
+  </div>
+
+  <a href="{{ url_for('dashboard') }}">الرئيسية</a>
+  <a href="{{ url_for('clients') }}">العملاء</a>
+  <a href="{{ url_for('transaction_add') }}">إضافة معاملة</a>
+  <a href="{{ url_for('transaction_batch') }}">إدخال جماعي يومي</a>
+  <a href="{{ url_for('transactions') }}">المعاملات</a>
+  <a href="{{ url_for('expenses') }}">المصروفات</a>
+  {% if is_admin() %}<a href="{{ url_for('currencies') }}">العملات وأسعار الصرف</a>{% endif %}
+  <a href="{{ url_for('tickets') }}">التذاكر</a>
+  <a href="{{ url_for('whatsapp') }}">واتساب</a>
+  <a href="{{ url_for('notifications') }}">التنبيهات {% if unread_notifications %}<b class="nav-count">{{ unread_notifications }}</b>{% endif %}</a>
+  {% if is_admin() %}<a href="{{ url_for('reports') }}">التقارير</a>
+  <a href="{{ url_for('annual_reports') }}">التقارير السنوية</a>{% endif %}
+  {% if is_admin() %}
+  <a href="{{ url_for('categories') }}">الأصناف والأسعار</a>
+  <a href="{{ url_for('users') }}">المستخدمون والصلاحيات</a>
+  <a href="{{ url_for('whatsapp_settings') }}">إعدادات واتساب</a>
+  <a href="{{ url_for('activity_logs') }}">سجل النشاطات</a>
+  <a href="{{ url_for('backup') }}">نسخة احتياطية</a>
+  <a href="{{ url_for('settings') }}">الإعدادات</a>
+  {% endif %}
+  <a href="{{ url_for('support') }}">التواصل مع الدعم</a>
+  {% if is_super_admin() %}<a href="{{ url_for('trash') }}">استرجاع المحذوفات</a>{% endif %}
+  <a href="{{ url_for('logout') }}" class="logout">خروج</a>
+</div>
+<div class="overlay" onclick="document.body.classList.remove('menu-open')"></div>
+{% endif %}
+
+<main class="{% if user %}content{% else %}login-page{% endif %}">
+  {% if user %}
+  <div class="topbar">
+    <div>
+      <h1 class="page-title">{{ title or "نظام سفريات برو والسياحة" }}</h1>
+      <p class="subtitle">إدارة احترافية للعملاء، الجوازات، المحاسبة، التقارير، والتنبيهات</p>
+    </div>
+    <div class="user-pill">👤 {{ user.full_name }}</div>
+  </div>
+  {% endif %}
+
+  {% with messages = get_flashed_messages() %}
+    {% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}
+  {% endwith %}
+  {% block body %}{% endblock %}
+</main>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/static/service-worker.js").catch(()=>{});
+}
+</script>
+</body>
+</html>

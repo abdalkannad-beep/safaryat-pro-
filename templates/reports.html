@@ -1,0 +1,35 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<h1>التقارير الخاصة بالمدير</h1><div class='alert'>هذه الصفحة خاصة بالمدير فقط ولا تظهر للموظفين.</div>
+
+<form class="inline">
+<input type="date" name="day" value="{{ day }}">
+<button>عرض</button>
+<button onclick="window.print();return false;">طباعة</button>
+</form>
+
+<form class="inline" action="{{ url_for('reports_export') }}" method="get">
+<label>تصدير Excel</label>
+<select name="period">
+<option value="day">يومي</option>
+<option value="month">شهري</option>
+<option value="year">سنوي</option>
+</select>
+<input type="date" name="date" value="{{ day }}">
+<button>تحميل ملف Excel</button>
+</form>
+
+<div class="cards">
+<div class="card">الإيرادات <b>{{ income }}</b></div>
+<div class="card">المصروفات <b>{{ expenses_sum }}</b></div>
+<div class="card">الصافي <b>{{ profit }}</b></div>
+</div>
+
+<table>
+<tr><th>العميل</th><th>الجواز</th><th>الهاتف</th><th>الخدمة</th><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th></tr>
+{% for r in txs %}
+<tr><td>{{ r.full_name }}</td><td>{{ r.passport_number }}</td><td>{{ r.phone }}</td><td>{{ r.service_name }}</td><td>{{ r.total_amount }}</td><td>{{ r.paid_amount }}</td><td>{{ r.remaining_amount }}</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,22 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<section class="panel">
+<h1>التنبيهات</h1>
+<p class="hint">هنا تظهر تنبيهات النظام، ومنها نجاح أو فشل إرسال رسائل واتساب.</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>الوقت</th><th>النوع</th><th>العنوان</th><th>التفاصيل</th></tr>
+{% for r in rows %}
+<tr>
+<td>{{ r.created_at }}</td>
+<td><span class="badge status-{{ r.type }}">{{ r.type }}</span></td>
+<td>{{ r.title }}</td>
+<td style="white-space:normal">{{ r.body }}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+</section>
+{% endblock %}

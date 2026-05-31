@@ -1,0 +1,13 @@
+ارفع الملفات إلى GitHub مع المجلدات كما هي.
+
+الشكل الصحيح داخل GitHub:
+app.py
+requirements.txt
+Procfile
+railway.json
+nixpacks.toml
+templates/
+static/
+
+لا تجعل ملفات login.html و layout.html في الصفحة الرئيسية.
+يجب أن تكون داخل مجلد templates.

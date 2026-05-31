@@ -1,0 +1,10 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<h1>الإعدادات</h1>
+<form method="post" class="form">
+<label>اسم الوكالة / اسم حساب المدير</label><input name="agency_name" value="{{ rows.get('agency_name','') }}">
+<label>حد تنبيه الأيام الافتراضي</label><input name="default_alert_days" type="number" value="{{ rows.get('default_alert_days','') }}" placeholder="اختياري">
+<button>حفظ</button>
+</form>
+{% endblock %}

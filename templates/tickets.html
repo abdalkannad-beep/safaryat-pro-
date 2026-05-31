@@ -1,0 +1,59 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<section class="panel">
+<h1>🎫 حجز التذاكر</h1>
+<p class="hint">إدارة تذاكر الباص والسيارات مع حفظ صورة التذكرة داخل قاعدة النظام.</p>
+
+<form method="post" enctype="multipart/form-data" class="form">
+<label>العميل</label>
+<select name="client_id" onchange="document.getElementById('newClientTicket').style.display=this.value=='new'?'block':'none'">
+<option value="new">عميل جديد</option>
+{% for c in clients %}<option value="{{ c.id }}">{{ c.full_name }} - {{ c.passport_number }}</option>{% endfor %}
+</select>
+
+<div id="newClientTicket">
+<input name="new_full_name" placeholder="اسم العميل">
+<input name="new_passport_number" placeholder="رقم الجواز">
+<input name="new_phone" placeholder="رقم الهاتف">
+</div>
+
+<label>نوع التذكرة</label>
+<select name="ticket_type">
+<option>باص</option>
+<option>سيارة</option>
+<option>طيران</option>
+<option>أخرى</option>
+</select>
+
+<input name="company_name" placeholder="اسم الشركة / الناقل">
+<input name="route_from" placeholder="من">
+<input name="route_to" placeholder="إلى">
+<label>تاريخ السفر</label><input type="date" name="travel_date" value="{{ today }}">
+<label>وقت السفر</label><input type="time" name="travel_time">
+<input name="seat_number" placeholder="رقم المقعد / السيارة">
+<input type="number" step="0.01" name="price" placeholder="السعر">
+<input type="number" step="0.01" name="paid_amount" placeholder="المدفوع" value="0">
+<label>صورة التذكرة</label><input type="file" name="ticket_image" accept="image/*,.pdf">
+<textarea name="notes" placeholder="ملاحظات"></textarea>
+<button>حفظ التذكرة</button>
+</form>
+</section>
+
+<section class="panel">
+<h2>سجل التذاكر</h2>
+<div class="table-wrap">
+<table>
+<tr><th>العميل</th><th>الجواز</th><th>النوع</th><th>الشركة</th><th>المسار</th><th>التاريخ</th><th>السعر</th><th>المدفوع</th><th>المتبقي</th><th>الصورة</th></tr>
+{% for r in rows %}
+<tr>
+<td>{{ r.full_name }}</td><td>{{ r.passport_number }}</td><td>{{ r.ticket_type }}</td><td>{{ r.company_name }}</td>
+<td>{{ r.route_from }} → {{ r.route_to }}</td><td>{{ r.travel_date }} {{ r.travel_time }}</td>
+<td>{{ r.price }}</td><td>{{ r.paid_amount }}</td><td>{{ r.remaining_amount }}</td>
+<td>{% if r.image_path %}<a class="btn" href="{{ r.image_path }}" target="_blank">عرض</a>{% endif %}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+</section>
+{% endblock %}

@@ -1,0 +1,21 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<section class="panel">
+<h1>سجل النشاطات</h1>
+<p class="hint">يعرض آخر العمليات المهمة داخل النظام لمراجعة المدير.</p>
+<div class="table-wrap">
+<table>
+<tr><th>الوقت</th><th>المستخدم</th><th>العملية</th><th>التفاصيل</th></tr>
+{% for r in rows %}
+<tr>
+<td>{{ r.created_at }}</td>
+<td>{{ r.full_name or "-" }}</td>
+<td>{{ r.action }}</td>
+<td style="white-space:normal">{{ r.details }}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+</section>
+{% endblock %}

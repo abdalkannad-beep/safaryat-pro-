@@ -1,0 +1,90 @@
+
+{% extends "layout.html" %}
+{% block body %}
+<section class="panel">
+<h1>المستخدمون والصلاحيات</h1>
+
+<div class="alert">
+{% if is_super_admin() %}
+أنت داخل بحساب المشرف الأعلى. تستطيع إنشاء أدمن أو موظف والتحكم بجميع الحسابات.
+{% else %}
+أنت داخل بحساب أدمن. تستطيع إنشاء موظفين فقط وتغيير كلمات مرورهم.
+{% endif %}
+</div>
+
+<form method="post" class="form small">
+<label>الاسم الكامل</label>
+<input name="full_name" placeholder="الاسم الكامل" required>
+
+<label>اسم المستخدم</label>
+<input name="username" placeholder="اسم المستخدم" required>
+
+<label>كلمة المرور</label>
+<input name="password" type="password" placeholder="كلمة المرور" required>
+
+<label>نوع الحساب</label>
+<select name="role">
+{% for role in allowed_roles %}
+  <option value="{{ role }}">
+    {% if role == 'super_admin' %}مشرف أعلى{% elif role == 'admin' %}أدمن{% else %}موظف{% endif %}
+  </option>
+{% endfor %}
+</select>
+
+<label><input type="checkbox" name="can_edit" value="1" checked> يستطيع التعديل</label>
+<label><input type="checkbox" name="can_delete" value="1"> يستطيع الحذف</label>
+<button>إنشاء حساب</button>
+</form>
+</section>
+
+<section class="panel">
+<h2>الحسابات</h2>
+<div class="table-wrap">
+<table>
+<tr>
+<th>الاسم</th>
+<th>المستخدم</th>
+<th>نوع الحساب</th>
+<th>تعديل</th>
+<th>حذف</th>
+<th>نشط</th>
+<th>حفظ الصلاحيات</th>
+<th>تغيير كلمة المرور</th>
+</tr>
+
+{% for r in rows %}
+<tr>
+<td>{{ r.full_name }}</td>
+<td>{{ r.username }}</td>
+<td>{% if r.role == 'super_admin' %}مشرف أعلى{% elif r.role == 'admin' %}أدمن{% else %}موظف{% endif %}</td>
+
+<td colspan="4">
+<form method="post" action="{{ url_for('user_status', uid=r.id) }}" class="mini">
+<select name="can_edit">
+<option value="1" {% if r.can_edit %}selected{% endif %}>تعديل: نعم</option>
+<option value="0" {% if not r.can_edit %}selected{% endif %}>تعديل: لا</option>
+</select>
+<select name="can_delete">
+<option value="1" {% if r.can_delete %}selected{% endif %}>حذف: نعم</option>
+<option value="0" {% if not r.can_delete %}selected{% endif %}>حذف: لا</option>
+</select>
+<select name="is_active">
+<option value="1" {% if r.is_active %}selected{% endif %}>نشط</option>
+<option value="0" {% if not r.is_active %}selected{% endif %}>موقوف</option>
+</select>
+<button>حفظ</button>
+</form>
+</td>
+
+<td>
+<form method="post" action="{{ url_for('user_password', uid=r.id) }}" class="mini">
+<input name="new_password" placeholder="كلمة جديدة">
+<button>تغيير</button>
+</form>
+</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+</section>
+{% endblock %}
