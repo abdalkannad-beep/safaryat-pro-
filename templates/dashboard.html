@@ -1,6 +1,6 @@
-
 {% extends "layout.html" %}
 {% block body %}
+
 <div class="hero">
   <div>
     <h2>مرحباً بك في لوحة التحكم</h2>
@@ -22,45 +22,77 @@
 
 <div class="section-grid">
   <section class="panel">
-    <h2>🚨 تنبيهات الأيام</h2>
+    <h2>تنبيهات الأيام</h2>
     {% if alerts %}
-    {% for a in alerts %}
-    <div class="alert">المعاملة: {{ a.service }} — العميل: {{ a.name }} بلغت {{ a.days }} يوم، والحد {{ a.limit }} يوم.</div>
-    {% endfor %}
+      {% for a in alerts %}
+        <div class="alert">
+          المعاملة: {{ a.service }} — العميل: {{ a.name }} بلغت {{ a.days }} يوم، والحد {{ a.limit }} يوم.
+        </div>
+      {% endfor %}
     {% else %}
-    <p class="empty">لا توجد تنبيهات حالياً.</p>
+      <p class="empty">لا توجد تنبيهات حالياً.</p>
     {% endif %}
   </section>
 
   <section class="panel">
-    <h2>⚡ اختصارات</h2>
+    <h2>اختصارات</h2>
     <div class="quick-grid">
       <a href="{{ url_for('transaction_batch') }}">إدخال جماعي</a>
       <a href="{{ url_for('client_add') }}">عميل جديد</a>
       <a href="{{ url_for('whatsapp') }}">رسالة واتساب</a>
-      <a href="{{ url_for('reports') }}">Excel</a>
+      <a href="{{ url_for('reports_export') }}">تصدير Excel</a>
     </div>
   </section>
 </div>
 
 <section class="panel">
-<h2>آخر المعاملات</h2>
-<div class="table-wrap">
-<table>
-<tr><th>العميل</th><th>الجواز</th><th>الخدمة</th><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th></tr>
-{% for r in rows %}
-<tr><td>{{ r.full_name }}</td><td>{{ r.passport_number }}</td><td>{{ r.service_name }}</td><td>{{ r.total_amount }}</td><td>{{ r.paid_amount }}</td><td>{{ r.remaining_amount }}</td><td><span class="badge">{{ r.status }}</span></td></tr>
-{% endfor %}
-</table>
-</div>
+  <h2>إحصائيات سريعة</h2>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3>المعاملات الجاهزة</h3>
+      <p>متابعة مباشرة للطلبات الجاهزة</p>
+    </div>
+    <div class="stat-card">
+      <h3>الجوازات المسلمة</h3>
+      <p>عرض الطلبات التي تم تسليمها</p>
+    </div>
+    <div class="stat-card">
+      <h3>الطلبات قيد العمل</h3>
+      <p>مراقبة المعاملات أثناء التنفيذ</p>
+    </div>
+  </div>
 </section>
-{% endblock %}
 
 <section class="panel">
-<h2>إحصائيات سريعة</h2>
-<div class="stats-grid">
-<div class="stat-card"><h3>المعاملات الجاهزة</h3><p>متابعة مباشرة للطلبات الجاهزة</p></div>
-<div class="stat-card"><h3>الجوازات المسلمة</h3><p>عرض الطلبات التي تم تسليمها</p></div>
-<div class="stat-card"><h3>الطلبات قيد العمل</h3><p>مراقبة المعاملات أثناء التنفيذ</p></div>
-</div>
+  <h2>آخر المعاملات</h2>
+  <div class="table-wrap">
+    <table>
+      <tr>
+        <th>العميل</th>
+        <th>الجواز</th>
+        <th>الخدمة</th>
+        <th>الإجمالي</th>
+        <th>المدفوع</th>
+        <th>المتبقي</th>
+        <th>الحالة</th>
+      </tr>
+      {% for r in rows %}
+      <tr>
+        <td>{{ r.full_name }}</td>
+        <td>{{ r.passport_number }}</td>
+        <td>{{ r.service_name }}</td>
+        <td>{{ r.total_amount }}</td>
+        <td>{{ r.paid_amount }}</td>
+        <td>{{ r.remaining_amount }}</td>
+        <td><span class="badge">{{ r.status }}</span></td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="7">لا توجد معاملات حالياً</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
 </section>
+
+{% endblock %}
