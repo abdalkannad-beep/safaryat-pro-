@@ -1,7 +1,7 @@
 import zipfile
 import os
 
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file, send_from_directory
 import sqlite3
 import threading
 import time
@@ -9,13 +9,11 @@ import requests
 import uuid
 from pathlib import Path
 import shutil
-from flask import send_from_directory
 from datetime import datetime, date, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from urllib.parse import quote
 from io import BytesIO
-from flask import send_file, send_from_directory
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "static/uploads/tickets"
@@ -1295,28 +1293,3 @@ if __name__ == "__main__":
     ensure_database_upgrade()
     start_scheduler_once()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
-
-
-@app.route("/backup")
-def backup():
-    gate = require_login()
-    if gate:
-        return gate
-
-    backup_folder = os.path.join(os.getcwd(), "backups")
-    os.makedirs(backup_folder, exist_ok=True)
-
-    if not os.path.exists(DB):
-        init_db()
-
-    filename = "backup_" + datetime.now().strftime("%Y%m%d_%H%M%S") + ".db"
-    target = os.path.join(backup_folder, filename)
-
-    shutil.copy2(DB, target)
-
-    return send_from_directory(
-        directory=os.path.abspath(backup_folder),
-        path=filename,
-        as_attachment=True
-    )
-
